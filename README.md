@@ -1,13 +1,24 @@
 DeepForest_JointPrediction
 ==============================
 
-Joint temporal predictions of individual tree crowns
+# Summary
+Joint temporal predictions of individual tree crowns using the DeepForest (https://deepforest.readthedocs.io/) python package.
+
+Focusing on Orway-Swisher Biological Station.
+
+# Installation
+
+```
+https://github.com/weecology/DeepForest_JointPrediction.git
+cd DeepForest_JointPrediction
+conda env create -f=environment.yml
+```
+
 
 Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── external       <- Data from third party sources.

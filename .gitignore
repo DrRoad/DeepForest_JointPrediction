@@ -3,3 +3,4 @@ data/
 models/
 project.wpr
 project.wpu
+__pycache__
