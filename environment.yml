@@ -1,0 +1,18 @@
+name: DeepForest_JointPrediction
+channels:
+  - conda-forge
+dependencies:
+  - python==3.7
+  - geopandas
+  - rasterio
+  - dask
+  - dask-jobqueue
+  - distributed
+  - jupyter
+  - pytest
+  - yapf
+  - pip
+  - pip:
+    - rasterstats
+    - comet_ml
+    - deepforest
