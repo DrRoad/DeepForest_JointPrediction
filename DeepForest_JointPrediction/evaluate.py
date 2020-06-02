@@ -2,11 +2,13 @@
 import pandas as pd
 import numpy as np
 import os
+import rasterstats
+import tensorflow as tf
 
 from deepforest import deepforest
 from deepforest import predict
+from utilities import project, non_zero_99_quantile
 
-from utilities import project
 
 def load_model(saved_model=None):
     if saved_model:
@@ -24,7 +26,7 @@ def predict_images(model, annotation_csv):
     return boxes
 
 
-def joint_prediction(sess):
+def joint_prediction(sess, predicted_boxes):
     #tensorflow sessions
     new_boxes, new_scores, new_labels = predict.non_max_suppression(
         sess,
@@ -56,15 +58,17 @@ def cross_year_prediction(boxes):
     grouped = boxes.groupby('plot_name')
     jointdf = []
 
+    #Start a tensorflow session for non-max suppression
+    sess = tf.Session()
     for name, group in grouped:
-        prediction = joint_prediction(sess)
-        jointdf.append(jointdf)
+        prediction = joint_prediction(sess, group)
+        jointdf.append(prediction)
     jointdf = pd.concat(jointdf)
 
     return jointdf
 
 
-def filter_by_height(boxes, rgb_dir, CHM_dir):
+def filter_by_height(boxes, rgb_dir, CHM_dir, min_height=3):
     """Limit predictions to crowns that have a LiDAR-derived height of atleast 3m
     Args:
         boxes: pandas dataframe from deepforest predict_generator

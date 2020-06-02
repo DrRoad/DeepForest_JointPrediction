@@ -39,18 +39,14 @@ def test_predict_images(model, annotation_csv):
 
 
 def test_run_single_year(model, annotation_csv, chm_dir):
-    boxes = evaluate.run(annotation_csv=annotation_csv,
-                         chm_dir=chm_dir,
-                         joint=False)
+    boxes = evaluate.run(annotation_csv=annotation_csv, chm_dir=chm_dir, joint=False)
     assert all(
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
-    
+
     assert not boxes.empty
 
 
 def test_run_joint(model, annotation_csv, chm_dir):
-    boxes = evaluate.run(annotation_csv=annotation_csv,
-                         chm_dir=chm_dir,
-                         joint=True)
+    boxes = evaluate.run(annotation_csv=annotation_csv, chm_dir=chm_dir, joint=True)
     assert all(
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])

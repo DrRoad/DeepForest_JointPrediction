@@ -1,12 +1,25 @@
 <annotation>
-    <folder>RGB</folder>
-    <filename>OSBS_028.tif</filename>
+    <folder>raw</folder>
+    <filename>OSBS_028_2018.tif</filename>
     <size>
         <width>400</width>
         <height>400</height>
         <depth>3</depth>
     </size>
     <segmented>0</segmented>
+    <object>
+        <name>Tree</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <occluded>0</occluded>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>78</xmin>
+            <ymin>374</ymin>
+            <xmax>90</xmax>
+            <ymax>384</ymax>
+        </bndbox>
+    </object>
     <object>
         <name>Tree</name>
         <pose>Unspecified</pose>
@@ -54,8 +67,8 @@
         <difficult>0</difficult>
         <bndbox>
             <xmin>64</xmin>
-            <ymin>379</ymin>
-            <xmax>85</xmax>
+            <ymin>384</ymin>
+            <xmax>77</xmax>
             <ymax>397</ymax>
         </bndbox>
     </object>
