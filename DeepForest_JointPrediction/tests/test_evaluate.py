@@ -22,8 +22,8 @@ def annotation_csv():
 
 
 @pytest.fixture()
-def CHM_dir():
-    return "data/benchmark/CHM_dir/"
+def chm_dir():
+    return "data/benchmark/CHM/"
 
 
 def test_load_model():
@@ -38,19 +38,19 @@ def test_predict_images(model, annotation_csv):
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
 
 
-def test_run_single_year(model, annotation_csv, CHM_dir):
-    boxes = evaluate.run(model=model,
-                         annotation_csv=annotation_csv,
-                         CHM_dir=CHM_dir,
+def test_run_single_year(model, annotation_csv, chm_dir):
+    boxes = evaluate.run(annotation_csv=annotation_csv,
+                         chm_dir=chm_dir,
                          joint=False)
     assert all(
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
+    
+    assert not boxes.empty
 
 
-def test_run_joint(model, annotation_csv, CHM_dir):
-    boxes = evaluate.run(model=model,
-                         annotation_csv=annotation_csv,
-                         CHM_dir=CHM_dir,
+def test_run_joint(model, annotation_csv, chm_dir):
+    boxes = evaluate.run(annotation_csv=annotation_csv,
+                         chm_dir=chm_dir,
                          joint=True)
     assert all(
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])

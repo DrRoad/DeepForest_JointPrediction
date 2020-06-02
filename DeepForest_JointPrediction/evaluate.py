@@ -1,10 +1,12 @@
 """Evaluate joint temporal predictions on benchmark data"""
 import pandas as pd
 import numpy as np
+import os
 
 from deepforest import deepforest
 from deepforest import predict
 
+from utilities import project
 
 def load_model(saved_model=None):
     if saved_model:
@@ -62,7 +64,7 @@ def cross_year_prediction(boxes):
     return jointdf
 
 
-def filter_by_height(boxes):
+def filter_by_height(boxes, rgb_dir, CHM_dir):
     """Limit predictions to crowns that have a LiDAR-derived height of atleast 3m
     Args:
         boxes: pandas dataframe from deepforest predict_generator
@@ -71,9 +73,6 @@ def filter_by_height(boxes):
     """
     boxes_grouped = boxes.groupby('plot_name')
     plot_groups = [boxes_grouped.get_group(x) for x in boxes_grouped.groups]
-
-    #Set RGB dir
-    rgb_dir = os.path.dirname(eval_path)
 
     #Project
     threshold_boxes = []
@@ -110,11 +109,11 @@ def filter_by_height(boxes):
     return threshold_boxes
 
 
-def run(annotation_csv, CHM_dir, saved_model=None, joint=True):
+def run(annotation_csv, chm_dir, saved_model=None, joint=True):
     """Run evaluation on benchmark data using a joint year model
     Args:
         annotation_csv: a csv file following the keras-retinanet predict generator format
-        CHM_dir: path to canopy-height model rasters
+        chm_dir: path to canopy-height model rasters
         joint: run cross year predictions
         model: a saved keras-retinanet model
     Returns
@@ -129,7 +128,8 @@ def run(annotation_csv, CHM_dir, saved_model=None, joint=True):
     else:
         filtered_boxes = boxes
 
-    filtered_boxes = filter_by_height(boxes, CHM_dir)
+    rgb_dir = os.path.dirname(annotation_csv)
+    filtered_boxes = filter_by_height(boxes, rgb_dir, chm_dir)
 
     return filtered_boxes
 
