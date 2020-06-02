@@ -12,3 +12,6 @@ install:
 - conda env create --file=environment.yml
 - source activate DeepForest_JointPrediction
 env: TRAVIS=true
+
+script:
+- pytest
