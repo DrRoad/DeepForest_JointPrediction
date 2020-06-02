@@ -8,7 +8,7 @@ from ..data.generate_benchmark import run
 
 
 def test_generate_benchmark():
-    run(rgb_dir="../../ext_data/raw/", savedir="output/")
+    run(rgb_dir="data/benchmark/RGB/", savedir="output/")
 
     fname = os.path.join("output/benchmark_annotations.csv")
     assert os.path.exists(fname)
