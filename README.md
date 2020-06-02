@@ -1,6 +1,8 @@
 DeepForest_JointPrediction
 ==============================
 
+[![Build Status](https://travis-ci.org/weecology/DeepForest_JointPrediction.svg?branch=master)](https://travis-ci.org/weecology/DeepForest)
+
 # Summary
 Joint temporal predictions of individual tree crowns using the DeepForest (https://deepforest.readthedocs.io/) python package.
 
