@@ -16,4 +16,4 @@ env: TRAVIS=true
 
 script:
   - cd DeepForest_JointPrediction/tests/
-  - pytest
+  - pytest DeepForest_JointPrediction/tests/
