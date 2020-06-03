@@ -15,4 +15,5 @@ install:
 env: TRAVIS=true
 
 script:
-  - python -m pytest 
+  - cd tests/
+  - pytest 
