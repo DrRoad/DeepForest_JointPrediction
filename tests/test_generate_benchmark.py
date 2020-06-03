@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.getcwd()))
 import pandas as pd
 
-from DeepForest_JointPrediction.data import generate_benchmark
+from ..DeepForest_JointPrediction.data import generate_benchmark
 
 
 def test_generate_benchmark():
