@@ -3,7 +3,7 @@ import os
 import sys
 import pandas as pd
 
-from DeepForest_JointPrediction.data import generate_benchmark
+from DeepForestJointPrediction.data import generate_benchmark
 
 
 def test_generate_benchmark():

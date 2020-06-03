@@ -2,8 +2,8 @@
 import pytest
 import os
 
-from DeepForest_JointPrediction import evaluate
-from DeepForest_JointPrediction.data import generate_benchmark
+from DeepForestJointPrediction import evaluate
+from DeepForestJointPrediction.data import generate_benchmark
 
 @pytest.fixture()
 def model():
