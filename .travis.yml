@@ -11,9 +11,10 @@ before_install:
 install:
 - conda env create --file=environment.yml
 - source activate DeepForest_JointPrediction
+- python setup.py install
 
 env: TRAVIS=true
 
 script:
   - cd tests/
-  - pytest 
+  - pytest
