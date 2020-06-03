@@ -1,5 +1,6 @@
 #test submission document
 import pytest
+import os
 
 from DeepForest_JointPrediction import evaluate
 from DeepForest_JointPrediction.data import generate_benchmark
@@ -12,14 +13,18 @@ def model():
 
 @pytest.fixture()
 def annotation_csv():
-    annotation_csv = generate_benchmark.run(rgb_dir="data/benchmark/RGB/",
-                                            savedir="data/benchmark/RGB/")
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    rgb_dir = os.path.join(current_folder,"data/benchmark/RGB/")
+        
+    annotation_csv = generate_benchmark.run(rgb_dir=rgb_dir, savedir=rgb_dir)
+    
     return annotation_csv
 
 
 @pytest.fixture()
 def chm_dir():
-    return "data/benchmark/CHM/"
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(current_folder, "data/benchmark/CHM/")
 
 
 def test_load_model():
