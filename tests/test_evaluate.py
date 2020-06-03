@@ -3,7 +3,7 @@ import pytest
 import os
 
 from DeepForestJointPrediction import evaluate
-from DeepForestJointPrediction.data import generate_benchmark
+from DeepForestJointPrediction import generate_benchmark
 
 @pytest.fixture()
 def model():
