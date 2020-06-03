@@ -16,5 +16,7 @@ install:
 env: TRAVIS=true
 
 script:
+  - ls
+  - pwd
   - ls tests/data/benchmark/RGB/
   - pytest
