@@ -16,4 +16,4 @@ env: TRAVIS=true
 
 script:
   - cd tests/
-  - pytest
+  - python -m pytest 
