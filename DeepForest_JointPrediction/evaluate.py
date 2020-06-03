@@ -7,8 +7,7 @@ import tensorflow as tf
 
 from deepforest import deepforest
 from deepforest import predict
-from .utilities import project, non_zero_99_quantile
-
+from DeepForest_JointPrediction.utilities import project, non_zero_99_quantile
 
 def load_model(saved_model=None):
     if saved_model:

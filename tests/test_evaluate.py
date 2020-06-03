@@ -1,11 +1,8 @@
 #test submission document
-import os
-import sys
-sys.path.append(os.path.dirname(os.getcwd()))
 import pytest
 
-from ..DeepForest_JointPrediction import evaluate
-from ..DeepForest_JointPrediction.data import generate_benchmark
+from DeepForest_JointPrediction import evaluate
+from DeepForest_JointPrediction.data import generate_benchmark
 
 @pytest.fixture()
 def model():
