@@ -3,6 +3,18 @@ import geopandas
 import shapely
 import numpy as np
 
+from deepforest import deepforest
+
+
+def load_model(weights=None):
+    if weights:
+        model = deepforest.deepforest(weights=weights)
+    else:
+        model = deepforest.deepforest()
+        model.use_release()
+
+    return model
+
 
 def project(raster_path, boxes):
     """Project image-coordinate boxes into utm based on the .tif file metadata"""
