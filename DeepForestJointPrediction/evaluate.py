@@ -1,16 +1,16 @@
-"""Evaluate joint temporal predictions on benchmark data"""
+"""
+Evaluate joint temporal predictions on benchmark data
+"""
 import pandas as pd
 import os
-
 from .joint import cross_year_prediction, filter_by_height
 from .utilities import load_model
 
-
+    
 def predict_images(model, image_csv):
     """Generate single year predictions"""
     boxes = model.predict_generator(image_csv)
     return boxes
-
 
 def run(image_csv, chm_dir, saved_model=None, joint=True):
     """Run evaluation on benchmark data using a joint year model

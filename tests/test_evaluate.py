@@ -35,7 +35,6 @@ def test_predict_images(model, image_csv):
     assert all(
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
 
-
 def test_run_single_year(model, image_csv, chm_dir):
     boxes = evaluate.run(image_csv=image_csv, chm_dir=chm_dir, joint=False)
     assert all(
