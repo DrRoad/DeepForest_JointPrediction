@@ -42,4 +42,10 @@ def test_calculate_IOU(boxes):
     
     assert len(iou_list) == 2
     assert np.argmax(iou_list) == 0
+
+def test_calculate_AP(boxes):
+    true_boxes, predicted_boxes = boxes    
+    AP = average_precision.calculate_AP(true_boxes, predicted_boxes)
+    
+    assert (AP > 0) & (AP < 1)
     

@@ -72,12 +72,19 @@ def calculate_mAP(true_boxes, predicted_boxes, iou_threshold=0.5):
 def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
     """Calculate average precision given two pandas frames of predictions"""
     
+    #holder to make sure annotations are not double detected
+    detected_annotations = []
+    false_positives = np.zeros((0,))
+    true_positives  = np.zeros((0,))    
+    num_annotations = true_boxes.shape[0]
+    scores = predicted_boxes.score.values
+    
     #Create shapely bounding box objects for both dataframes
     true_boxes['geometry'] = true_boxes.apply(
-        lambda x: shapely.geometry.box(x.xmin, x.ymin, x.xmax, x.ymax), axis=1)
+        lambda x: box(x.xmin, x.ymin, x.xmax, x.ymax), axis=1)
     
     predicted_boxes['geometry'] = predicted_boxes.apply(
-        lambda x: shapely.geometry.box(x.xmin, x.ymin, x.xmax, x.ymax), axis=1)
+        lambda x: box(x.xmin, x.ymin, x.xmax, x.ymax), axis=1)
     
     #create rtree index for fast lookup of ground truth
     idx = rtree_index()
@@ -86,12 +93,17 @@ def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
     
     for index, row in predicted_boxes.iterrows():
         #Find all ground truth that match prediction
-        matched_truth=[true_boxes["geometry"][x] for x in idx.intersection(row["geometry"])]
+        matched_truth=[true_boxes["geometry"][x] for x in idx.intersection(row["geometry"].bounds)]
         
+        if(len(matched_truth)==0):
+            false_positives = np.append(false_positives, 1)
+            true_positives  = np.append(true_positives, 0)            
+            continue
+            
         #Calculate IoU
         overlaps = calculate_IoU(row["geometry"], matched_truth)
         assigned_annotation = np.argmax(overlaps)
-        max_overlap         = overlaps[0, assigned_annotation]
+        max_overlap         = overlaps[assigned_annotation]
     
         if max_overlap >= iou_threshold and assigned_annotation not in detected_annotations:
             false_positives = np.append(false_positives, 0)
