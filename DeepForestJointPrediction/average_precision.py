@@ -2,9 +2,11 @@
 Calculate mAP for a set of predicted and ground truth boxes
 Inspired by https://github.com/fizyr/keras-retinanet/blob/45db917de178f2409f69698ac984a4fa9a6c5f3a/keras_retinanet/utils/eval.py#L30
 """
+import pandas as pd
+import numpy as np
+
 from shapely.geometry import box
 from rtree.index import Index as rtree_index
-import numpy as np
 
 def IoU(true_box, predicted_box):
     """Calculate intersection-over-union scores for a pair of boxes
@@ -22,9 +24,11 @@ def IoU(true_box, predicted_box):
 
 def calculate_IoU(predicted_box, true_boxes):
     """given a predicted box, find IoU to all matching true boxes"""
-    results = [ ]
+    IoU_list = [ ]
     for true_box in true_boxes:
-        results.append(IoU(true_box, predicted_box))
+        IoU_list.append(IoU(true_box, predicted_box))
+        
+    return IoU_list
 
 def _compute_ap(recall, precision):
     """ Compute the average precision, given the recall and precision curves.
@@ -53,8 +57,19 @@ def _compute_ap(recall, precision):
     
     return ap
 
-#TODO expand to multi-label
-def calculate_AP(true_boxes, predicted_boxes,iou_threshold=0.5):
+def calculate_mAP(true_boxes, predicted_boxes, iou_threshold=0.5):
+    labels = true_boxes.label.unique()
+    APs = [ ]
+    for label in labels:
+        AP = calculate_AP(true_boxes[true_boxes.label == label], predicted_boxes[predicted_boxes.label == label])
+        print("Average Precision for {} is {}".format(label, AP))
+        APs.append(AP)
+    mAP = np.mean(AP)
+    print("Mean Average Precision is {}".format(label, mAP))
+    
+    return mAP
+    
+def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
     """Calculate average precision given two pandas frames of predictions"""
     
     #Create shapely bounding box objects for both dataframes
@@ -75,7 +90,7 @@ def calculate_AP(true_boxes, predicted_boxes,iou_threshold=0.5):
         
         #Calculate IoU
         overlaps = calculate_IoU(row["geometry"], matched_truth)
-        assigned_annotation = np.argmax(overlaps, axis=1)
+        assigned_annotation = np.argmax(overlaps)
         max_overlap         = overlaps[0, assigned_annotation]
     
         if max_overlap >= iou_threshold and assigned_annotation not in detected_annotations:
