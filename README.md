@@ -3,10 +3,21 @@ DeepForest_JointPrediction
 
 [![Build Status](https://travis-ci.org/weecology/DeepForest_JointPrediction.svg?branch=master)](https://travis-ci.org/weecology/DeepForest)
 
-# Summary
-Joint temporal predictions of individual tree crowns using the DeepForest (https://deepforest.readthedocs.io/) python package.
+# Roadmap
 
-Focusing on Orway-Swisher Biological Station.
+The aim of this repo is to provide reproducible analysis for analysis of tree mortality and forest dynamics at the Orway-Swisher Biological Station surveyed by the National Ecological Observatory Network's Airborne Platform. NEON's data archive potentially goes back to 2013, but with varying degrees of quality.
+
+* Individual tree detection at the site level using the DeepForest (https://deepforest.readthedocs.io/) algorithm. We will also assess the value of joint temporal predictions for the same area across years.
+* Evaluation of individual level methods against multiple years of image-annotated data, as well as individual field stems from the OSBS megaplot.
+* A two class deep learning model (RGB (+ Hyperspetral?)) to classify each tree crown as 'Alive' or "Dead".
+* A multi-class ensemble model to classify each "Alive" crown to species.
+* A between year tree-fall detector
+
+# Potential Questions
+
+* How many trees fall each year? What was the estimated height and crown area by species?
+* How many trees died/fell after major hurricane events such as Hurricane Irma 2017
+* How many trees died/fell during proscribed burns on the site?
 
 # Installation
 
@@ -16,55 +27,3 @@ cd DeepForest_JointPrediction
 conda env create -f=environment.yml
 ```
 
-
-Project Organization
-------------
-
-    ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
-
---------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

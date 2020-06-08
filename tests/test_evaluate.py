@@ -36,14 +36,9 @@ def test_predict_images(model, image_csv):
         boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
 
 def test_run_single_year(model, image_csv, chm_dir):
-    boxes = evaluate.run(image_csv=image_csv, chm_dir=chm_dir, joint=False)
-    assert all(
-        boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
-
-    assert not boxes.empty
-
+    mAP = evaluate.run(image_csv=image_csv, chm_dir=chm_dir, joint=False)
+    assert mAP > 0 & mAP < 1
 
 def test_run_joint(model, image_csv, chm_dir):
     boxes = evaluate.run(image_csv=image_csv, chm_dir=chm_dir, joint=True)
-    assert all(
-        boxes.columns == ["plot_name", "xmin", "ymin", "xmax", "ymax", "score", "label"])
+    assert mAP > 0 & mAP < 1

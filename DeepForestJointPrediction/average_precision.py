@@ -4,9 +4,7 @@ Inspired by https://github.com/fizyr/keras-retinanet/blob/45db917de178f2409f6969
 """
 import pandas as pd
 import numpy as np
-
 from shapely.geometry import box
-from rtree.index import Index as rtree_index
 
 def IoU(true_box, predicted_box):
     """Calculate intersection-over-union scores for a pair of boxes
@@ -61,23 +59,22 @@ def calculate_mAP(true_boxes, predicted_boxes, iou_threshold=0.5):
     labels = true_boxes.label.unique()
     APs = [ ]
     for label in labels:
-        AP = calculate_AP(true_boxes[true_boxes.label == label], predicted_boxes[predicted_boxes.label == label])
-        print("Average Precision for {} is {}".format(label, AP))
+        AP = calculate_AP(true_boxes[true_boxes.label == label], predicted_boxes[predicted_boxes.label == label], iou_threshold=iou_threshold)
         APs.append(AP)
-    mAP = np.mean(AP)
-    print("Mean Average Precision is {}".format(label, mAP))
+    mAP = np.mean(APs)
+    print("Mean Average Precision is {:.3f}".format(mAP))
     
     return mAP
     
 def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
-    """Calculate average precision given two pandas frames of predictions"""
+    """
+    Calculate average precision given two pandas frames of predictions
+    Args:
+        true_boxes: a pandas dataframe with the columns plot_name, xmin, xmax, ymin, ymax, label
+        predicted_boxes: a pandas dataframe with the columns plot_name, xmin, xmax, ymin, ymax, label, score
+    """
     
-    #holder to make sure annotations are not double detected
-    detected_annotations = []
-    false_positives = np.zeros((0,))
-    true_positives  = np.zeros((0,))    
-    num_annotations = true_boxes.shape[0]
-    scores = predicted_boxes.score.values
+    #TODO check args
     
     #Create shapely bounding box objects for both dataframes
     true_boxes['geometry'] = true_boxes.apply(
@@ -86,35 +83,48 @@ def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
     predicted_boxes['geometry'] = predicted_boxes.apply(
         lambda x: box(x.xmin, x.ymin, x.xmax, x.ymax), axis=1)
     
-    #create rtree index for fast lookup of ground truth
-    idx = rtree_index()
-    for pos, cell in enumerate(true_boxes["geometry"]):
-        idx.insert(pos, cell.bounds)    
+    #Sort predictions by score, such that higher scoring boxes get matching first
+    predicted_boxes = predicted_boxes.sort_values(by=["score"])
     
-    for index, row in predicted_boxes.iterrows():
-        #Find all ground truth that match prediction
-        matched_truth=[true_boxes["geometry"][x] for x in idx.intersection(row["geometry"].bounds)]
+    #Counters
+    false_positives = np.zeros((0,))
+    true_positives  = np.zeros((0,))   
+    num_annotations = 0.0
+    scores = []
+    
+    #For each image
+    images = true_boxes.plot_name.unique()
+    for plot_name in images:
+        #Filter detections and annotations
+        predicted_image_boxes = predicted_boxes[predicted_boxes.plot_name == plot_name]
+        true_image_boxes = true_boxes[true_boxes.plot_name == plot_name]
         
-        if(len(matched_truth)==0):
-            false_positives = np.append(false_positives, 1)
-            true_positives  = np.append(true_positives, 0)            
-            continue
+        #add to annotations
+        num_annotations +=true_image_boxes.shape[0]
+        
+        #holder to make sure annotations are not double detected for an image
+        detected_annotations = []
+    
+        for index, row in predicted_image_boxes.iterrows():
             
-        #Calculate IoU
-        overlaps = calculate_IoU(row["geometry"], matched_truth)
-        assigned_annotation = np.argmax(overlaps)
-        max_overlap         = overlaps[assigned_annotation]
+            #Add score to counter
+            scores.append(row["score"])
+                                            
+            #Calculate IoU
+            overlaps = calculate_IoU(row["geometry"], true_boxes["geometry"])
+            assigned_annotation = np.argmax(overlaps)
+            max_overlap         = overlaps[assigned_annotation]
+        
+            if max_overlap >= iou_threshold and assigned_annotation not in detected_annotations:
+                false_positives = np.append(false_positives, 0)
+                true_positives  = np.append(true_positives, 1)
+                detected_annotations.append(assigned_annotation)
+            else:
+                false_positives = np.append(false_positives, 1)
+                true_positives  = np.append(true_positives, 0)    
     
-        if max_overlap >= iou_threshold and assigned_annotation not in detected_annotations:
-            false_positives = np.append(false_positives, 0)
-            true_positives  = np.append(true_positives, 1)
-            detected_annotations.append(assigned_annotation)
-        else:
-            false_positives = np.append(false_positives, 1)
-            true_positives  = np.append(true_positives, 0)    
-    
-    # sort by score
-    indices         = np.argsort(-scores)
+    # sort by score, 
+    indices         = np.argsort(-np.array(scores))
     false_positives = false_positives[indices]
     true_positives  = true_positives[indices]
 
@@ -128,5 +138,7 @@ def calculate_AP(true_boxes, predicted_boxes, iou_threshold=0.5):
 
     # compute average precision
     average_precision  = _compute_ap(recall, precision)
+    
+    print("{} instances of class {} with Average Precision: {:.3f}".format(num_annotations, true_boxes.label.unique(), average_precision))
     
     return average_precision

@@ -30,9 +30,15 @@ def run(image_csv, chm_dir, saved_model=None, joint=True):
         filtered_boxes = boxes
 
     rgb_dir = os.path.dirname(image_csv)
-    filtered_boxes = filter_by_height(boxes, rgb_dir, chm_dir)
-
-    return filtered_boxes
+    predicted_images = filter_by_height(boxes, rgb_dir, chm_dir)
+    true_boxes = pd.read_csv(image_csv, names=["image_path","xmin","ymin","xmax","ymax","label"])
+    #Create plotname
+    true_boxes["plot_name"] = true_boxes.image_path.apply(lambda x: os.path.splitext(x)[0])
+    
+    #Eval
+    mAP = average_precision.calculate_mAP(predicted_images, true_boxes)
+    
+    return mAP
 
 
 if __name__ == "__main__":
